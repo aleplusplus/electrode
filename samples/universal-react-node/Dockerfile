@@ -1,11 +1,29 @@
-FROM node:4.5
-RUN npm i -g npm@3
-EXPOSE 3000
-ENV DIR /usr/src/app
-RUN mkdir -p $DIR
-WORKDIR $DIR
-COPY . $DIR
-RUN npm install
-RUN $DIR/node_modules/.bin/gulp build
-CMD node server
+ROM node:carbon-alpine
 
+# ENV Variables
+ENV DIR /usr/src/app
+# ENV NODE_ENV=production
+
+# Create App Dir
+RUN mkdir -p $DIR
+
+# Set Working Dir
+WORKDIR $DIR
+
+# Copy App Codebase
+COPY . $DIR
+
+# Install APP Dependencies
+RUN npm install
+
+# Cleanup
+RUN rm -f .npmrc
+
+# Build process
+RUN npm run build
+RUN $DIR/node_modules/.bin/clap mps
+
+# Run APP
+CMD npm run prod
+
+EXPOSE 3000
